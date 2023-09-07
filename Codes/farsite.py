@@ -26,9 +26,9 @@ tstart = time.time()
 ##### Inputs
 
 ### Dimensions (t,x,y)
-ti,tf,nt = [0.0, 1, 10] # Time coordinate
-xi,xf,nx = [-5, 5, 50] # x coordinate
-yi,yf,ny = [-5, 5, 50] # y coordinate
+ti,tf,nt = [0.0, 0.3, 10] # Time coordinate (min)
+xi,xf,nx = [-3, 3, 50] # x coordinate (ft)
+yi,yf,ny = [-3, 3, 50] # y coordinate (ft)
 delta = 0.0001 # Precision in exact derivatives
 
 t = np.linspace(ti,tf,nt)
@@ -38,7 +38,7 @@ tt,xx,yy = np.meshgrid(t,x,y, indexing='ij')
 
 
 ### Initial parameters
-ncurves = 50 # Number of trajectories to be computed
+ncurves = 20 # Number of trajectories to be computed
 nfronts = 4 # Number of fronts to be shown
 steps = 12 # Number of steps for the ODE solver
 point = False # If 'True', the initial front is a point. If 'False', it is a closed curve
@@ -52,23 +52,23 @@ else:
 
 ### Rothermel's model
 # Fuel particle properties
-H = 8000*np.ones([nt,nx,ny]) # Heat content
-S_t = 0.0555*np.ones([nt,nx,ny]) # Total mineral content
-S_e = 0.010*np.ones([nt,nx,ny]) # Effective mineral content
-Rho_p = 32*np.ones([nt,nx,ny]) # Particle density
+H = 8000*np.ones([nt,nx,ny]) # Heat content (Btu/lb)
+S_t = 0.0555*np.ones([nt,nx,ny]) # Total mineral content (lb minerals/lb wood)
+S_e = 0.010*np.ones([nt,nx,ny]) # Effective mineral content ((lb minerals-lb silica)/lb wood)
+Rho_p = 32*np.ones([nt,nx,ny]) # Particle density (lb/ft**3)
 
 # Fuel array properties
-Sigma = 1000*np.ones([nt,nx,ny]) # Surface area to volume ratio
-W_0 = 10*np.ones([nt,nx,ny]) # Fuel load
-Delta = 5*np.ones([nt,nx,ny]) # Fuel bed depth
-M_x = 1*np.ones([nt,nx,ny]) # Dead fuel moisture of extinction
+Sigma = 1000*np.ones([nt,nx,ny]) # Surface area to volume ratio (ft**2/ft**3)
+W_0 = 10*np.ones([nt,nx,ny]) # Fuel load (lb/ft**2)
+Delta = 5*np.ones([nt,nx,ny]) # Fuel bed depth (ft)
+M_x = 1*np.ones([nt,nx,ny]) # Dead fuel moisture of extinction (fraction)
 
 # Environmental values
-z = np.exp(-np.square(xx[0])/2-np.square(yy[0])/2) # Surface topography (height map)
+z = np.exp(-np.square(xx[0])/2-np.square(yy[0])/2) # Surface topography (height map, ft)
 dzx,dzy = np.gradient(z,x,y)
-phi_s = np.arccos(np.divide(1,np.sqrt(1+np.square(dzx)+np.square(dzy)))) # Slope steepness
-M_f = 0.5*np.ones([nt,nx,ny]) # Fuel moisture
-U = 1*np.ones([nt,nx,ny]) # Midflame wind speed
+phi_s = np.arccos(np.divide(1,np.sqrt(1+np.square(dzx)+np.square(dzy)))) # Slope steepness (angle)
+M_f = 0.5*np.ones([nt,nx,ny]) # Fuel moisture (lb moisture/lb wood)
+U = 1*np.ones([nt,nx,ny]) # Midflame wind speed (ft/min)
 phi_w = 0.0*np.ones([nt,nx,ny]) # Wind direction wrt the x-axis (on the tangent plane to the surface)
 
 
@@ -430,7 +430,7 @@ for i in range(ncurves):
 
         
        
-### Graphic representation
+##### Graphic representation
 
 rcs = steps//nfronts # Ratio points calculated-points shown
 colors = cm.rainbow(np.linspace(0, 1, nfronts))
@@ -445,6 +445,9 @@ else:
     plt.plot(front[0],front[1],'r-')
     
 plt.axis([xi,xf,yi,yf])
+plt.xlabel('distance (ft)')
+plt.ylabel('distance (ft)')
+plt.title('Time = %.2f min' %tf)
 plt.gca().set_aspect('equal', adjustable='box')
 plt.contourf(x,y,np.transpose(z))
 plt.show()
@@ -453,6 +456,6 @@ plt.show()
 
 
 
-### Time control
+# Time control
  
 trun = time.time() - tstart

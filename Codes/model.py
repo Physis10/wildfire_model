@@ -1,10 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 20 12:48:20 2022
 
 @author: Enrique Pendás Recondo
 
-Thesis version 1
+Geometric wildfire simulator
 """
 
 # Load libraries
@@ -22,9 +23,9 @@ tstart = time.time()
 
 
 
-# Inputs
+##### Inputs
 
-# Dimensions (t,x,y)
+### Dimensions (t,x,y)
 ti,tf,nt = [0.0, 1.0, 10] # Time coordinate
 xi,xf,nx = [-2.5, 2.5, 30] # x coordinate
 yi,yf,ny = [-2.5, 2.5, 30] # y coordinate
@@ -36,17 +37,7 @@ y = np.linspace(yi,yf,ny)
 tt,xx,yy = np.meshgrid(t,x,y, indexing='ij')
 
 
-# Parameters of the model
-z = 3*np.exp(-np.square(xx[0])/2-np.square(yy[0])/2) # Surface
-a = 1*np.ones([nt,nx,ny]) # Parameter 'a' of the model
-h = 1*np.ones([nt,nx,ny]) # Parameter 'h' of the model
-epsilon = 0.6*np.ones([nt,nx,ny]) # Eccentricity of the ellipse
-phi = 0.0*np.ones([nt,nx,ny]) # Orientation of the ellipse wrt the x-axis (on the tangent plane to the surface)
-
-dzx,dzy = np.gradient(z,x,y)
-
-
-# Initial parameters
+### Initial parameters
 ncurves = 20 # Number of trajectories to be computed
 nfronts = 4 # Number of fronts to be shown
 steps = 12 # Number of steps for the ODE solver
@@ -59,12 +50,22 @@ else:
     out = True # If 'True', outward trajectories are computed. If 'False', inward ones are computed
 
 
+### Parameters of the model
+z = 3*np.exp(-np.square(xx[0])/2-np.square(yy[0])/2) # Surface
+a = 1*np.ones([nt,nx,ny]) # Parameter 'a' of the model
+h = 1*np.ones([nt,nx,ny]) # Parameter 'h' of the model
+epsilon = 0.6*np.ones([nt,nx,ny]) # Eccentricity of the ellipse
+phi = 0.0*np.ones([nt,nx,ny]) # Orientation of the ellipse wrt the x-axis (on the tangent plane to the surface)
+
+dzx,dzy = np.gradient(z,x,y)
 
 
 
-# Definition of functions
 
-# 1-form 'omega'
+
+##### Definition of functions
+
+### 1-form 'omega'
 def omega(v1,v2,dzx,dzy,phi,alpha_v,beta_v):
     w1 = v1+np.multiply(dzx,beta_v)
     w2 = np.sqrt(1+np.square(dzx))
@@ -75,7 +76,7 @@ def omega(v1,v2,dzx,dzy,phi,alpha_v,beta_v):
     return w3+w6
 
 
-# Finsler metric
+### Finsler metric
 def F(v1,v2,dzx,dzy,phi,epsilon,a,h):
     beta_v = v1*dzx+v2*dzy
     alpha_v =  np.sqrt(v1**2+v2**2+np.square(beta_v))
@@ -88,7 +89,7 @@ def F(v1,v2,dzx,dzy,phi,epsilon,a,h):
     return np.divide(f1,np.divide(f2,f3)+f4)
 
 
-# Vector function that defines the ODE system
+### Vector function that defines the ODE system
 def f(x0,x1,x2,v1,v2,t,x,y,dzx,dzy,phi,epsilon,a,h,delta):
     nt,nx,ny = [len(t),len(x),len(y)]
     zero = np.zeros([nt,nx,ny])
@@ -153,7 +154,7 @@ def f(x0,x1,x2,v1,v2,t,x,y,dzx,dzy,phi,epsilon,a,h,delta):
     return np.array([f1,f2,f3,f4])
 
 
-# Orthogonality equation
+### Orthogonality equation
 def eq(ang,dsf1,dsf2,dzx,dzy,phi,epsilon,a,h,t,x,y,t0,x0,y0):
     dtf1 = np.cos(ang)
     dtf2 = np.sin(ang) # Unitary wrt the Euclidean metric
@@ -180,7 +181,7 @@ def eq(ang,dsf1,dsf2,dzx,dzy,phi,epsilon,a,h,t,x,y,t0,x0,y0):
     return eq1
 
 
-# Jacobian of the orthogonality equation
+### Jacobian of the orthogonality equation
 def jaceq(ang,dsf1,dsf2,dzx,dzy,phi,epsilon,a,h,t,x,y,t0,x0,y0):
     dtf1 = np.cos(ang)
     dtf2 = np.sin(ang)
@@ -260,9 +261,9 @@ def jaceq(ang,dsf1,dsf2,dzx,dzy,phi,epsilon,a,h,t,x,y,t0,x0,y0):
 
 
 
-# ODE solver: Runge-Kutta 4
+##### ODE solver: Runge-Kutta 4
 
-# Initial conditions
+### Initial conditions
 T = np.linspace(ti,tf,steps+1)
 deltaT = (tf-ti)/steps
 sol = np.zeros([ncurves,4,steps+1])
@@ -330,7 +331,7 @@ else:
                       dtf2/F_norm]   
 
 
-# Iteration of the Runge-Kutta 4 method
+### Iteration of the Runge-Kutta 4 method
 for i in range(ncurves):
     for n in range(steps):
         k1 = f(T[n],sol[i,0,n],sol[i,1,n],sol[i,2,n],sol[i,3,n],
@@ -356,7 +357,7 @@ for i in range(ncurves):
 
         
        
-# Graphic representation
+##### Graphic representation
 
 rcs = steps//nfronts # Ratio points calculated-points shown
 colors = cm.rainbow(np.linspace(0, 1, nfronts))

@@ -27,8 +27,8 @@ tstart = time.time()
 
 ### Dimensions (t,x,y)
 ti,tf,nt = [0.0, 1, 10] # Time coordinate (min)
-xi,xf,nx = [-5, 5, 50] # x coordinate (m)
-yi,yf,ny = [-5, 5, 50] # y coordinate (m)
+xi,xf,nx = [-4, 4, 50] # x coordinate (m)
+yi,yf,ny = [-4, 4, 50] # y coordinate (m)
 delta = 0.0001 # Precision in exact derivatives
 
 t = np.linspace(ti,tf,nt)
@@ -58,7 +58,7 @@ S_e = 0.010*np.ones([nt,nx,ny]) # Effective mineral content ((kg minerals-kg sil
 Rho_p = 512.60*np.ones([nt,nx,ny]) # Particle density (kg/m**3)
 
 # Fuel array properties
-Sigma = 100*np.ones([nt,nx,ny]) # Surface area to volume ratio (cm**2/cm**3)
+Sigma = 100*np.ones([nt,nx,ny]) # Surface area to volume ratio (m**2/m**3)
 W_0 = 10*np.ones([nt,nx,ny]) # Fuel load (kg/m**2)
 Delta = 1*np.ones([nt,nx,ny]) # Fuel bed depth (m)
 M_x = 1*np.ones([nt,nx,ny]) # Dead fuel moisture of extinction (fraction)
@@ -422,7 +422,7 @@ for i in range(ncurves):
 
         
        
-### Graphic representation
+##### Graphic representation
 
 rcs = steps//nfronts # Ratio points calculated-points shown
 colors = cm.rainbow(np.linspace(0, 1, nfronts))
@@ -448,6 +448,6 @@ plt.show()
 
 
 
-### Time control
+# Time control
  
 trun = time.time() - tstart
