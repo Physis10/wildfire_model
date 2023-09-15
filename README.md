@@ -41,10 +41,10 @@ Code for Python that implements the model in the same way as model.py, with the 
 		- H: array of dim (nt,nx,ny). Heat content (kJ/kg).
 		- S_t: array of dim (nt,nx,ny). Total mineral content (kg minerals/kg wood).
 		- S_e: array of dim (nt,nx,ny). Effective mineral content ((kg minerals-kg silica)/kg wood).
-		- Rho_p: array of dim (nt,nx,ny). Particle density (kg/m**3).
+		- Rho_p: array of dim (nt,nx,ny). Particle density (kg/m\*\*3).
 	- Fuel array properties
-		- Sigma: array of dim (nt,nx,ny). Surface area to volume ratio (m**2/m**3).
-		- W_0: array of dim (nt,nx,ny). Fuel load (kg/m**2).
+		- Sigma: array of dim (nt,nx,ny). Surface area to volume ratio (m\*\*2/m\*\*3).
+		- W_0: array of dim (nt,nx,ny). Fuel load (kg/m\*\*2).
 		- Delta: array of dim (nt,nx,ny). Fuel bed depth (m).
 		- M_x: array of dim (nt,nx,ny). Dead fuel moisture of extinction (fraction).
 	- Environmental values
@@ -65,10 +65,10 @@ Code for Python that implements the model in the case where the fire propagation
 		- H: array of dim (nt,nx,ny). Heat content (Btu/lb).
 		- S_t: array of dim (nt,nx,ny). Total mineral content (lb minerals/lb wood).
 		- S_e: array of dim (nt,nx,ny). Effective mineral content ((lb minerals-lb silica)/lb wood).
-		- Rho_p: array of dim (nt,nx,ny). Particle density (lb/ft**3).
+		- Rho_p: array of dim (nt,nx,ny). Particle density (lb/ft\*\*3).
 	- Fuel array properties
-		- Sigma: array of dim (nt,nx,ny). Surface area to volume ratio (ft**2/ft**3).
-		- W_0: array of dim (nt,nx,ny). Fuel load (lb/ft**2).
+		- Sigma: array of dim (nt,nx,ny). Surface area to volume ratio (ft\*\*2/ft\*\*3).
+		- W_0: array of dim (nt,nx,ny). Fuel load (lb/ft\*\*2).
 		- Delta: array of dim (nt,nx,ny). Fuel bed depth (ft).
 		- M_x: array of dim (nt,nx,ny). Dead fuel moisture of extinction (fraction).
 	- Environmental values
