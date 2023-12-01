@@ -361,6 +361,7 @@ for i in range(ncurves):
 
 rcs = steps//nfronts # Ratio points calculated-points shown
 colors = cm.rainbow(np.linspace(0, 1, nfronts))
+plt.figure(dpi=1000) # Resolution setting
 for i in range(ncurves):
     plt.plot(sol[i,0,:],sol[i,1,:],'b-')
     for j in range(nfronts):
