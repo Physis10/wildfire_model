@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.2)  14 DEC 2023 16:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.2)  3 JAN 2024 22:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -736,7 +736,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  85i,5n,93p,226b,357s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Film1.pdf (1 page, 1057563 bytes).
+Output written on Film1.pdf (1 page, 1093925 bytes).
 PDF statistics:
  152 PDF objects out of 1000 (max. 8388607)
  70 compressed objects within 1 object stream

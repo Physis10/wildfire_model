@@ -377,6 +377,7 @@ for n in range(steps+1):
     plt.axis([xi,xf,yi,yf])
     plt.gca().set_aspect('equal', adjustable='box')
     plt.contourf(x,y,np.transpose(z))
+    plt.title('Wind: $ \longrightarrow $')
     filename = 'fig' + str(n) + '.png'
     plt.savefig(filename,dpi=200)
     plt.close()
