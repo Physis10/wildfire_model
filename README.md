@@ -25,7 +25,9 @@ Code for Python that provides the wildfire spread given discretized inputs, whic
 		- p0 (if True): float. Initial point.
 		- frontx,fronty (if False): array. Set of points (x,y) that define the initial closed curve.
 		- out (if False): boolean. If 'True', outward trajectories are computed. If 'False', inward ones are computed.
-
+	- firefront: boolean. If 'True', the fronts are interpolated as smooth curves. If 'False', the fronts are shown as isolated points. Choose 'True' only if there are no cut points. Otherwise, the fronts are not computed correctly.
+	- spacetime: boolean. If 'True', an additional 3D plot is shown, where the z-axis is the time and the fire trajectories travel in the spacetime.
+	
 - Parameters of the model
 	- z: array of dim (nx,ny). Height map that defines the surface z(x,y).
 	- a: array of dim (nt,nx,ny). Parameter 'a' of the model.
@@ -37,7 +39,7 @@ Code for Python that provides the wildfire spread given discretized inputs, whic
 Code for Python that implements the model in the same way as model.py, with the difference that now the inputs are actual physical conditions and the parameters of the model are calculated using Rothermel's model. A thorough and complete review of this physical model can be found in the following research paper: P. L. Andrews. The Rothermel Surface Fire Spread Model and Associated Developments: A Comprehensive Explanation. Gen. Tech. Rep. RMRS-GTR-371. USDA Forest Service, Rocky Mountain Research Station, Fort Collins, 2018. Inputs (in metric units):
 - Dimensions (t,x,y): the same as in model.py. Time unit: min. Space unit: m.
 
-- Initial parameters: the same as in model.py.
+- Initial parameters: the same as in model.py, without the options 'firefront' and 'spacetime'.
 
 - Rothermel's model
 	- Fuel particle properties
@@ -61,7 +63,7 @@ Code for Python that implements the model in the same way as model.py, with the 
 Code for Python that implements the model in the case where the fire propagation is assumed to be elliptical (h=0) and the ellipse dimensions are calculated in the same way as in the Farsite simulator: M. A. Finney. FARSITE: Fire Area Simulator-model development and evaluation. Res. Pap. RMRS-RP-4, USDA Forest Service, Rocky Mountain Research Station, Ogden, 1998 (revised 2004). This simulator is also based on Rothermel's model, so the inputs are the same as in rothermel.py with the difference that Farsite uses different units. Inputs (in native units):
 - Dimensions (t,x,y): the same as in model.py. Time unit: min. Space unit: ft.
 
-- Initial parameters: the same as in model.py.
+- Initial parameters: the same as in model.py, without the options 'firefront' and 'spacetime'.
 
 - Rothermel's model
 	- Fuel particle properties

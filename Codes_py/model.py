@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep 20 12:48:20 2022
+Created on Fri Feb  9 18:04:18 2024
 
 @author: Enrique Pendás Recondo
 
-Geometric wildfire simulator
+Wildfire simulator based on Finsler geometry
 """
 
 # Load libraries
@@ -38,9 +38,9 @@ tt,xx,yy = np.meshgrid(t,x,y, indexing='ij')
 
 
 ### Initial parameters
-ncurves = 20 # Number of trajectories to be computed
+ncurves = 30 # Number of trajectories to be computed
 nfronts = 4 # Number of fronts to be shown
-steps = 12 # Number of steps for the ODE solver
+steps = 20 # Number of steps for the ODE solver
 point = False # If 'True', the initial front is a point. If 'False', it is a closed curve
 if (point):
     p0 = [-1.0,1.0] # Initial point
@@ -48,6 +48,9 @@ else:
     theta = np.linspace(0,2*np.pi,21)
     frontx,fronty = [0.2*np.cos(theta)-1,0.2*np.sin(theta)+1] # Initial curve counter-clockwise parametrized
     out = True # If 'True', outward trajectories are computed. If 'False', inward ones are computed
+
+firefront = True # If 'True', the fronts are shown as smooth curves. If 'False', as isolated points. Choose 'True' only if there are no cut points
+spacetime = False # If 'True', an additional 3D plot is shown, where z-axis = time and the trajectories travel in the spacetime
 
 
 ### Parameters of the model
@@ -290,7 +293,7 @@ else:
     for i in range(ncurves):
         # Parameters for the while loop
         stop = False
-        max_iter = 8
+        max_iter = 100
         mult = 0
         
         dsf1,dsf2 = [dfront[0][i],dfront[1][i]]
@@ -304,7 +307,7 @@ else:
         while (not stop and max_iter > 0):
             root = optimize.root_scalar(eq,
                              args=(dsf1,dsf2,dzx,dzy,phi,epsilon,a,h,t,x,y,ti,front[0][i],front[1][i]),
-                             x0=seed_ang+mult*np.pi/4,
+                             x0=seed_ang+mult*2*np.pi/max_iter,
                              fprime=jaceq)
             ang = root.root
             dtf1 = np.cos(ang)
@@ -361,11 +364,23 @@ for i in range(ncurves):
 
 rcs = steps//nfronts # Ratio points calculated-points shown
 colors = cm.rainbow(np.linspace(0, 1, nfronts))
-plt.figure(dpi=1000) # Resolution setting
+times = np.linspace(ti,tf,steps+1)
+
+
+### 2D Figure
+fig2d = plt.figure(dpi=1000) # Resolution setting
 for i in range(ncurves):
     plt.plot(sol[i,0,:],sol[i,1,:],'b-')
     for j in range(nfronts):
-        plt.plot(sol[i,0,rcs*(j+1)],sol[i,1,rcs*(j+1)],'.',color=colors[j,:])
+        if (firefront):
+            solx = np.append(sol[:,0,rcs*(j+1)],[sol[0,0,rcs*(j+1)]],0) # Initial and final points of the firefront are the same, in order to obtain a closed interpolation
+            soly = np.append(sol[:,1,rcs*(j+1)],[sol[0,1,rcs*(j+1)]],0)
+            tck,v = interpolate.splprep([solx,soly],k=3,s=0)
+            vv = np.linspace(0,1,100) # The more points, the smoother the graphic representation of the firefronts
+            wave = interpolate.splev(vv,tck)
+            plt.plot(wave[0],wave[1],'-',color=colors[j,:])
+        else:
+            plt.plot(sol[i,0,rcs*(j+1)],sol[i,1,rcs*(j+1)],'.',color=colors[j,:])
 
 if (point):
     plt.plot(x1i,x2i,'o',color='r')
@@ -373,10 +388,44 @@ else:
     plt.plot(front[0],front[1],'r-')
     
 plt.axis([xi,xf,yi,yf])
+plt.xlabel('x')
+plt.ylabel('y')
 plt.gca().set_aspect('equal', adjustable='box')
 plt.contourf(x,y,np.transpose(z))
 plt.show()
+plt.close
 
+
+### 3D Figure
+if (spacetime):
+    fig3d = plt.figure(dpi=1000)
+    ax = plt.axes(projection='3d')
+    for i in range(ncurves):
+        ax.plot3D(sol[i,0,:],sol[i,1,:],times,'b-')
+        for j in range(nfronts):
+            if (firefront):
+                solx = np.append(sol[:,0,rcs*(j+1)],[sol[0,0,rcs*(j+1)]],0)
+                soly = np.append(sol[:,1,rcs*(j+1)],[sol[0,1,rcs*(j+1)]],0)
+                tck,v = interpolate.splprep([solx,soly],k=3,s=0)
+                vv = np.linspace(0,1,100)
+                wave = interpolate.splev(vv,tck)
+                ax.plot3D(wave[0],wave[1],times[rcs*(j+1)],'-',color=colors[j,:])
+            else:
+                plt.plot(sol[i,0,rcs*(j+1)],sol[i,1,rcs*(j+1)],'.',color=colors[j,:])
+
+    if (point):
+        ax.plot3D(x1i,x2i,ti,'o',color='r')
+    else:
+        ax.plot3D(front[0],front[1],ti,'r-')
+
+    ax.set_xlim([xi,xf])
+    ax.set_ylim([yi,yf])
+    ax.set_zlim([ti,tf])
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('t')
+    plt.show()
+    plt.close
 
 
 
