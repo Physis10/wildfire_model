@@ -374,7 +374,7 @@ else:
         else:
             seed_ang = -np.arccos(seed_vec[0])
         
-        while (not stop and max_iter > 0):
+        while (not stop and mult < max_iter):
             root = optimize.root_scalar(eq,
                              args=(dsf1,dsf2,dzx,dzy,phi,epsilon,a,h,t,x,y,ti,front[0][i],front[1][i]),
                              x0=seed_ang+mult*np.pi/4,
@@ -387,13 +387,11 @@ else:
                 if det > 0: # Condition for the initial velocity to be pointing outwards
                     stop = True
                 else:
-                    max_iter -= 1
                     mult += 1
             else:
                 if det < 0: # Condition for the initial velocity to be pointing inwards
                     stop = True
                 else:
-                    max_iter -= 1
                     mult += 1
         
         F_vin = F(dtf1,dtf2,dzx, dzy, phi, epsilon, a, h)
